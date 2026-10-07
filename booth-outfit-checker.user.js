@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name         BOOTH 衣装チェック管理
 // @namespace    booth-outfit-manager
-// @version      3.4.3
+// @version      3.4.4
 // @description  BOOTH商品を「気になる」「非表示」で管理。安定した画像ポップアッププレビュー対応。
 // @match        https://booth.pm/ja/search/*
 // @match        https://booth.pm/*/search/*
 // @run-at       document-idle
-// @license      MIT
 // @grant        none
 // ==/UserScript==
 
@@ -1812,6 +1811,81 @@
     // パネル
     // =========================================================
 
+    function setupPanelDrag(panel) {
+        const header = panel.querySelector('.booth-panel-header');
+        const positionKey = 'booth_outfit_manager_panel_position_v1';
+        let drag = null;
+        let positioned = false;
+        header.title = 'ドラッグして移動';
+        header.style.cursor = 'grab';
+        header.style.touchAction = 'none';
+        header.style.userSelect = 'none';
+
+        function moveTo(left, top) {
+            const rect = panel.getBoundingClientRect();
+            left = clamp(left, 0, Math.max(0, window.innerWidth - rect.width));
+            top = clamp(top, 0, Math.max(0, window.innerHeight - rect.height));
+            panel.style.setProperty('right', 'auto', 'important');
+            panel.style.setProperty('bottom', 'auto', 'important');
+            panel.style.setProperty('left', left + 'px', 'important');
+            panel.style.setProperty('top', top + 'px', 'important');
+            positioned = true;
+        }
+
+        function keepInView() {
+            if (!positioned) return;
+            const rect = panel.getBoundingClientRect();
+            moveTo(rect.left, rect.top);
+        }
+
+        try {
+            const saved = JSON.parse(localStorage.getItem(positionKey) || 'null');
+            if (saved && Number.isFinite(saved.left) && Number.isFinite(saved.top)) {
+                moveTo(saved.left, saved.top);
+            }
+        } catch (_) { /* 保存位置が読めなければ従来の右下に表示 */ }
+
+        header.addEventListener('pointerdown', event => {
+            if (event.button !== 0 || !event.isPrimary || event.target.closest('button')) return;
+            const rect = panel.getBoundingClientRect();
+            drag = { id: event.pointerId, x: event.clientX, y: event.clientY,
+                left: rect.left, top: rect.top, moved: false };
+            header.setPointerCapture(event.pointerId);
+            header.style.cursor = 'grabbing';
+            hidePreview();
+            event.preventDefault();
+        });
+        header.addEventListener('pointermove', event => {
+            if (!drag || drag.id !== event.pointerId) return;
+            const dx = event.clientX - drag.x;
+            const dy = event.clientY - drag.y;
+            if (!drag.moved && Math.hypot(dx, dy) < 3) return;
+            drag.moved = true;
+            moveTo(drag.left + dx, drag.top + dy);
+        });
+        function finishDrag(event) {
+            if (!drag || (event.pointerId !== undefined && drag.id !== event.pointerId)) return;
+            const finished = drag;
+            drag = null;
+            header.style.cursor = 'grab';
+            if (header.hasPointerCapture(finished.id)) header.releasePointerCapture(finished.id);
+            if (finished.moved) {
+                const rect = panel.getBoundingClientRect();
+                try {
+                    localStorage.setItem(positionKey, JSON.stringify({ left: rect.left, top: rect.top }));
+                } catch (_) { /* 保存不可でも現在のページでは移動できる */ }
+            }
+        }
+        header.addEventListener('pointerup', finishDrag);
+        header.addEventListener('pointercancel', finishDrag);
+        header.addEventListener('lostpointercapture', finishDrag);
+        window.addEventListener('blur', finishDrag);
+        window.addEventListener('resize', keepInView);
+        // 折りたたみ解除や設定欄の開閉でも、見出しが画面外へ出ないようにする。
+        const sizeObserver = new ResizeObserver(keepInView);
+        sizeObserver.observe(panel);
+    }
+
     function createPanel() {
         const panel =
             document.createElement(
@@ -2000,6 +2074,8 @@
         document.body.appendChild(
             panel
         );
+
+        setupPanelDrag(panel);
 
 
         // -----------------------------------------------------
@@ -3308,7 +3384,7 @@
 
 
         console.log(
-            '[BOOTH Manager] v3.4.3 ready'
+            '[BOOTH Manager] v3.4.4 ready'
         );
     }
 
