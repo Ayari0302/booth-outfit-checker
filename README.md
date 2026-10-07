@@ -1,5 +1,12 @@
 # BOOTH Outfit Checker
 
+## 🎥 紹介動画
+
+BOOTH Outfit Checker の導入方法と基本的な使い方を動画で紹介しています。
+
+[▶ 紹介動画を見る](https://youtu.be/u9gIltC_oJE)
+
+
 BOOTH の検索結果を見やすく整理するための **Tampermonkey ユーザースクリプト**です。
 
 一度確認した商品を非表示にしたり、気になる商品だけ残したり、商品画像を大きくプレビューしたりできます。
@@ -29,17 +36,36 @@ BOOTH の検索結果を見やすく整理するための **Tampermonkey ユー�
 
 ### 1. Tampermonkeyをインストール
 
-使用しているブラウザに [Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=ja) をインストールしてください。
+使用しているブラウザに [Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=ja) をインストールします。
 
-### 2. Userscript を開く
+1. Chrome ウェブストアで「Tampermonkey」を開く
+2. **「Chromeに追加」** をクリック
+3. 確認画面で **「拡張機能を追加」** をクリック
 
-このリポジトリの [`booth-outfit-checker.user.js`](./booth-outfit-checker.user.js) を開き、GitHub の **Raw** をクリックします。
+インストールが完了すると、Chrome右上の拡張機能一覧からTampermonkeyを確認できます。
 
-Tampermonkey が有効であれば、Userscript のインストール画面が開きます。
+### 2. 「ユーザースクリプトを許可」をONにする
 
-### 3. インストールする
+Tampermonkeyでスクリプトを動かすために、Chrome側で1か所設定します。
 
-Tampermonkey の画面で内容を確認し、**インストール**を押します。
+1. Chrome右上の **拡張機能（パズルのアイコン）** をクリック
+2. Tampermonkeyの **「︙」** をクリック
+3. **「拡張機能を管理」** を開く
+4. **「ユーザースクリプトを許可」** をONにする
+
+> この設定がOFFの場合、スクリプトをインストールしてもBOOTH上で動作しません。
+
+### 3. BOOTH Outfit Checkerをインストール
+
+このリポジトリの [`booth-outfit-checker.user.js`](./booth-outfit-checker.user.js) を開きます。
+
+その後、
+
+1. 右上の **Raw** をクリック
+2. Tampermonkeyのインストール画面が開く
+3. 右上の **「インストール」** をクリック
+
+これで導入完了です。
 
 ### 4. BOOTH の検索ページを開く
 
@@ -61,6 +87,20 @@ BOOTH の検索結果ページを開くと、各商品に次の操作が追加�
 
 ⚙ 設定
 ```
+
+### 5. スクリプトが有効になっているか確認
+
+Chrome右上のTampermonkeyアイコンをクリックします。
+
+**BOOTH 衣装チェック管理** が表示され、スイッチがONになっていればOKです。
+
+もし動作しない場合は、
+
+- Tampermonkey自体が有効になっているか
+- 「ユーザースクリプトを許可」がONになっているか
+- 「BOOTH 衣装チェック管理」がONになっているか
+
+を確認してください。
 
 ## 使い方
 
