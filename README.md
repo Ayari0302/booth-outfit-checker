@@ -27,9 +27,9 @@ BOOTH の検索結果を見やすく整理するための **Tampermonkey ユー�
 
 ## インストール
 
-### 1. [Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=ja) をインストール
+### 1. Tampermonkeyをインストール
 
-使用しているブラウザに Tampermonkey をインストールしてください。
+使用しているブラウザに [Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=ja) をインストールしてください。
 
 ### 2. Userscript を開く
 
